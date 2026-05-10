@@ -21,4 +21,21 @@ router.get("/", authenticate, requireAdmin, async (_req, res: Response): Promise
   res.json({ data: users });
 });
 
+const roleHandler = async (req: AuthRequest, res: Response): Promise<void> => {
+  const { role } = req.body;
+  if (!["ADMIN", "MEMBER"].includes(role)) {
+    res.status(422).json({ message: "Role must be ADMIN or MEMBER" });
+    return;
+  }
+  const user = await prisma.user.update({
+    where: { id: req.params.id },
+    data: { role },
+    select: { id: true, name: true, email: true, role: true, createdAt: true },
+  });
+  res.json({ data: user });
+};
+
+router.patch("/:id/role", requireAdmin, roleHandler);
+router.put("/:id/role", requireAdmin, roleHandler);
+
 export default router;

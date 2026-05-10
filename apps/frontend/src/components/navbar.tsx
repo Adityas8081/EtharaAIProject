@@ -42,6 +42,19 @@ export function Navbar() {
                 {link.label}
               </Link>
             ))}
+            {user?.role === "ADMIN" && (
+              <Link
+                href="/users"
+                className={cn(
+                  "px-4 py-2 rounded-lg text-sm font-medium transition-all",
+                  pathname.startsWith("/users")
+                    ? "bg-indigo-50 text-indigo-700 font-semibold"
+                    : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                )}
+              >
+                Users
+              </Link>
+            )}
           </nav>
         </div>
 
