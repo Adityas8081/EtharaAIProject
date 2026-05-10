@@ -22,7 +22,7 @@ router.post("/signup", validate(signupSchema), async (req: Request, res: Respons
   }
   const passwordHash = await bcrypt.hash(password, 12);
   const user = await prisma.user.create({
-    data: { name, email, passwordHash },
+    data: { name, email, passwordHash, role: req.body.role || "MEMBER" },
     select: { id: true, name: true, email: true, role: true, createdAt: true },
   });
   const accessToken = signAccessToken({ userId: user.id, role: user.role });
