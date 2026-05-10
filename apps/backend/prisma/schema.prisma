@@ -25,6 +25,8 @@ model Project {
   id          String          @id @default(cuid())
   name        String
   description String?
+  dueDate     DateTime?
+  priority    Priority        @default(MEDIUM)
   createdAt   DateTime        @default(now())
   createdBy   User            @relation(fields: [createdById], references: [id])
   createdById String
@@ -57,6 +59,7 @@ model Task {
   createdById  String
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
+  assignedAt   DateTime?
 }
 
 model RefreshToken {

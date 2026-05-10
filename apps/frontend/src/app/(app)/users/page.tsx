@@ -91,7 +91,7 @@ export default function UsersPage() {
                     {user.id !== currentUser?.id && (
                       <Select
                         value={user.role}
-                        onValueChange={(value) => changeRole(user.id, value)}
+                        onValueChange={(value) => value && changeRole(user.id, value)}
                         disabled={updating === user.id}
                       >
                         <SelectTrigger className="w-32">

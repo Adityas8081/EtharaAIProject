@@ -5,5 +5,8 @@
   "scripts": {
     "dev:backend": "npm run dev --workspace=apps/backend",
     "dev:frontend": "npm run dev --workspace=apps/frontend"
+  },
+  "overrides": {
+    "postcss": "^8.5.10"
   }
 }

@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
 import { api } from "@/lib/api";
+import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,6 +12,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 
 export default function SignupPage() {
   const router = useRouter();
+  const { refetch } = useAuth();
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", password: "", role: "MEMBER" });
 
@@ -19,9 +21,9 @@ export default function SignupPage() {
     setLoading(true);
     try {
       await api.post("/api/auth/signup", form);
-      toast.success(`Account created as ${form.role}! Welcome.`);
+      toast.success(`Account created! Welcome, ${form.name}.`);
+      await refetch();
       router.push("/dashboard");
-      router.refresh();
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : "Signup failed");
     } finally {
@@ -32,9 +34,12 @@ export default function SignupPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-purple-50 p-4">
       <div className="w-full max-w-md space-y-4">
-        <div className="text-center">
+        <div className="text-center flex flex-col items-center gap-2">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center text-white text-xl font-black shadow-lg">
+            TF
+          </div>
           <h1 className="text-3xl font-black text-indigo-600">TaskFlow</h1>
-          <p className="text-slate-500 text-sm mt-1">Team Task Manager</p>
+          <p className="text-slate-500 text-sm">Team Task Manager</p>
         </div>
         <Card className="border-2 shadow-xl">
           <CardHeader className="space-y-1 pb-4">

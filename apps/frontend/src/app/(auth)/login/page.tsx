@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
 import { api } from "@/lib/api";
+import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,6 +13,7 @@ import { ShieldCheck, User } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { refetch } = useAuth();
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ email: "", password: "" });
 
@@ -20,9 +22,9 @@ export default function LoginPage() {
     setLoading(true);
     try {
       const res = await api.post<{ data: { name: string; role: string } }>("/api/auth/login", form);
-      toast.success(`Welcome back, ${res.data.name}! Logged in as ${res.data.role}`);
+      toast.success(`Welcome, ${res.data.name}!`);
+      await refetch();
       router.push("/dashboard");
-      router.refresh();
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : "Login failed");
     } finally {
@@ -33,9 +35,12 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-purple-50 p-4">
       <div className="w-full max-w-md space-y-4">
-        <div className="text-center">
+        <div className="text-center flex flex-col items-center gap-2">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center text-white text-xl font-black shadow-lg">
+            TF
+          </div>
           <h1 className="text-3xl font-black text-indigo-600">TaskFlow</h1>
-          <p className="text-slate-500 text-sm mt-1">Team Task Manager</p>
+          <p className="text-slate-500 text-sm">Team Task Manager</p>
         </div>
         <Card className="border-2 shadow-xl">
           <CardHeader className="space-y-1 pb-4">

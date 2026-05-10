@@ -20,7 +20,9 @@ router.get("/", async (req: AuthRequest, res: Response): Promise<void> => {
   if (projectId) where.projectId = projectId;
   if (status) where.status = status;
   if (assignedToId) where.assignedToId = assignedToId;
-  if (req.user!.role === "MEMBER") where.assignedToId = req.user!.userId;
+  if (req.user!.role === "MEMBER") {
+    where.project = { members: { some: { userId: req.user!.userId } } };
+  }
 
   const [tasks, total] = await Promise.all([
     prisma.task.findMany({ where, include: { assignedTo: { select: { id: true, name: true, email: true, role: true, createdAt: true } }, project: { select: { id: true, name: true } } }, orderBy: { createdAt: "desc" }, skip, take: parseInt(limit) }),
@@ -32,9 +34,15 @@ router.get("/", async (req: AuthRequest, res: Response): Promise<void> => {
 });
 
 router.post("/", requireAdmin, validate(createTaskSchema), async (req: AuthRequest, res: Response): Promise<void> => {
-  const { dueDate, ...rest } = req.body;
+  const { dueDate, assignedToId, ...rest } = req.body;
   const task = await prisma.task.create({
-    data: { ...rest, createdById: req.user!.userId, dueDate: dueDate ? new Date(dueDate) : undefined },
+    data: {
+      ...rest,
+      assignedToId,
+      createdById: req.user!.userId,
+      dueDate: dueDate ? new Date(dueDate) : undefined,
+      assignedAt: assignedToId ? new Date() : undefined,
+    },
     include: { assignedTo: { select: { id: true, name: true, email: true, role: true, createdAt: true } } },
   });
   res.status(201).json({ data: { ...task, status: computeStatus(task) } });
@@ -57,10 +65,19 @@ router.put("/:id", async (req: AuthRequest, res: Response): Promise<void> => {
     res.status(422).json({ message: "Validation failed", errors: parsed.error.errors });
     return;
   }
-  const { dueDate, ...rest } = parsed.data as Record<string, unknown>;
+  const { dueDate, assignedToId, ...rest } = parsed.data as Record<string, unknown>;
+  const existing = await prisma.task.findUnique({ where: { id: req.params.id }, select: { assignedToId: true } });
+  const assignedAtUpdate = assignedToId !== undefined && assignedToId !== existing?.assignedToId
+    ? { assignedAt: assignedToId ? new Date() : null }
+    : {};
   const task = await prisma.task.update({
     where: { id: req.params.id },
-    data: { ...rest, ...(dueDate !== undefined ? { dueDate: dueDate ? new Date(dueDate as string) : null } : {}) },
+    data: {
+      ...rest,
+      ...(assignedToId !== undefined ? { assignedToId: assignedToId as string | null } : {}),
+      ...(dueDate !== undefined ? { dueDate: dueDate ? new Date(dueDate as string) : null } : {}),
+      ...assignedAtUpdate,
+    },
     include: { assignedTo: { select: { id: true, name: true, email: true, role: true, createdAt: true } } },
   });
   res.json({ data: { ...task, status: computeStatus(task) } });

@@ -14,7 +14,7 @@ const navLinks = [
 ];
 
 export function Navbar() {
-  const { user, logout } = useAuth();
+  const { user, loading, logout } = useAuth();
   const pathname = usePathname();
 
   const initials = user?.name
@@ -26,7 +26,9 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         <div className="flex items-center gap-8">
           <Link href="/dashboard" className="font-bold text-xl text-indigo-600 tracking-tight flex items-center gap-2">
-            <FolderKanban className="w-5 h-5" />
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center text-white text-xs font-black shadow-sm">
+              TF
+            </div>
             TaskFlow
           </Link>
           <nav className="flex gap-1">
@@ -66,7 +68,12 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-3">
-          {user ? (
+          {loading && !user ? (
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-48 rounded-xl bg-slate-200 animate-pulse" />
+              <div className="h-8 w-20 rounded-lg bg-slate-200 animate-pulse" />
+            </div>
+          ) : user ? (
             <>
               <div className="flex items-center gap-3 bg-slate-50 rounded-xl px-4 py-2 border">
                 <div className={cn(
@@ -94,9 +101,7 @@ export function Navbar() {
                 Logout
               </Button>
             </>
-          ) : (
-            <div className="w-8 h-8 rounded-full bg-slate-200 animate-pulse" />
-          )}
+          ) : null}
         </div>
       </div>
     </header>

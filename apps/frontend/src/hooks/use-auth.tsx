@@ -17,9 +17,28 @@ interface AuthContextType {
   refetch: () => Promise<void>;
 }
 
+const AUTH_CACHE_KEY = "tf_user";
+
+function getCachedUser(): User | null {
+  try {
+    const raw = sessionStorage.getItem(AUTH_CACHE_KEY);
+    return raw ? (JSON.parse(raw) as User) : null;
+  } catch {
+    return null;
+  }
+}
+
+function setCachedUser(u: User | null) {
+  try {
+    if (u) sessionStorage.setItem(AUTH_CACHE_KEY, JSON.stringify(u));
+    else sessionStorage.removeItem(AUTH_CACHE_KEY);
+  } catch {}
+}
+
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  // Always start null/loading so server and client render identically (no hydration mismatch)
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -27,20 +46,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const res = await api.get<{ data: User }>("/api/users/me");
       setUser(res.data);
+      setCachedUser(res.data);
     } catch {
       setUser(null);
+      setCachedUser(null);
     } finally {
       setLoading(false);
     }
   }
 
   async function logout() {
-    await api.post("/api/auth/logout", {});
+    try { await api.post("/api/auth/logout", {}); } catch {}
     setUser(null);
+    setCachedUser(null);
     window.location.href = "/login";
   }
 
-  useEffect(() => { fetchUser(); }, []);
+  useEffect(() => {
+    // Restore from cache instantly so UI doesn't flash, then verify with server
+    const cached = getCachedUser();
+    if (cached) {
+      setUser(cached);
+      setLoading(false);
+    }
+    fetchUser();
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user, loading, logout, refetch: fetchUser }}>
