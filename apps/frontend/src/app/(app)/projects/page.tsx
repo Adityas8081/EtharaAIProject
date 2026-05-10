@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDate } from "@/lib/utils";
+import { FolderKanban, Plus, Users, ListTodo } from "lucide-react";
 
 interface Project {
   id: string;
@@ -30,7 +31,7 @@ export default function ProjectsPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-slate-900">Projects</h1>
         <RoleGuard role="ADMIN">
-          <Button asChild><Link href="/projects/new">New Project</Link></Button>
+          <Button asChild className="flex items-center gap-2"><Link href="/projects/new"><Plus className="w-4 h-4" />New Project</Link></Button>
         </RoleGuard>
       </div>
       {loading ? (
@@ -48,7 +49,10 @@ export default function ProjectsPage() {
                 <CardDescription>{project.description ?? "No description"}</CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-slate-500">{project._count?.tasks ?? 0} tasks · {project.members?.length ?? 0} members</p>
+                <div className="flex items-center gap-3 text-sm text-slate-500">
+                  <span className="flex items-center gap-1"><ListTodo className="w-3.5 h-3.5" />{project._count?.tasks ?? 0} tasks</span>
+                  <span className="flex items-center gap-1"><Users className="w-3.5 h-3.5" />{project.members?.length ?? 0} members</span>
+                </div>
               </CardContent>
               <CardFooter className="flex justify-between items-center">
                 <span className="text-xs text-slate-400">Created {formatDate(project.createdAt)}</span>

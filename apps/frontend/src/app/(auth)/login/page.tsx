@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { ShieldCheck, User } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -53,10 +54,10 @@ export default function LoginPage() {
               </div>
 
               {/* Role info banner */}
-              <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-3 text-sm text-indigo-700">
-                <p className="font-semibold mb-1">Role-based access:</p>
-                <p>👑 <strong>Admin</strong> — Create projects, assign tasks, manage users</p>
-                <p>👤 <strong>Member</strong> — View &amp; update assigned task status</p>
+              <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-3 text-sm text-indigo-700 space-y-1">
+                <p className="font-semibold flex items-center gap-1 mb-2"><ShieldCheck className="w-4 h-4" /> Role-based access</p>
+                <p className="flex items-center gap-2"><span className="w-5 h-5 rounded bg-indigo-600 flex items-center justify-center"><ShieldCheck className="w-3 h-3 text-white" /></span><span><strong>Admin</strong> — Create projects, assign tasks, manage users</span></p>
+                <p className="flex items-center gap-2"><span className="w-5 h-5 rounded bg-slate-400 flex items-center justify-center"><User className="w-3 h-3 text-white" /></span><span><strong>Member</strong> — View &amp; update assigned task status</span></p>
               </div>
             </CardContent>
             <CardFooter className="flex flex-col gap-3 pt-2">

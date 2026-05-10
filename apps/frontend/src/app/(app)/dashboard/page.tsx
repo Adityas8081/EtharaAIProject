@@ -8,6 +8,7 @@ import { OverdueList } from "@/components/overdue-list";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
+import { CheckCircle2, Clock, AlertCircle, ListTodo, LayoutDashboard, ShieldCheck } from "lucide-react";
 
 interface DashboardStats {
   total: number;
@@ -49,7 +50,7 @@ export default function DashboardPage() {
     <div className="space-y-6">
       <Skeleton className="h-24 rounded-2xl" />
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-32 rounded-xl" />)}
+        {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-28 rounded-xl" />)}
       </div>
       <Skeleton className="h-80 rounded-xl" />
     </div>
@@ -61,7 +62,11 @@ export default function DashboardPage() {
       <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 text-white">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold">Welcome back, {user?.name?.split(" ")[0]} 👋</h1>
+            <div className="flex items-center gap-2 mb-1">
+              <LayoutDashboard className="w-5 h-5 text-indigo-300" />
+              <span className="text-indigo-200 text-sm font-medium">Overview</span>
+            </div>
+            <h1 className="text-2xl font-bold">Welcome back, {user?.name?.split(" ")[0]}</h1>
             <p className="text-indigo-200 mt-1 text-sm">Here&apos;s what&apos;s happening with your team today</p>
           </div>
           <div className="text-right">
@@ -73,31 +78,34 @@ export default function DashboardPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <StatsCard title="Total Tasks" value={stats?.total ?? 0} icon="📋" color="default" />
-        <StatsCard title="Completed" value={stats?.done ?? 0} icon="✅" color="green" />
-        <StatsCard title="In Progress" value={stats?.inProgress ?? 0} icon="⚡" color="blue" />
-        <StatsCard title="Overdue" value={stats?.overdue ?? 0} icon="🔴" color="red" />
+        <StatsCard title="Total Tasks" value={stats?.total ?? 0} icon={ListTodo} color="default" />
+        <StatsCard title="Completed" value={stats?.done ?? 0} icon={CheckCircle2} color="green" />
+        <StatsCard title="In Progress" value={stats?.inProgress ?? 0} icon={Clock} color="blue" />
+        <StatsCard title="Overdue" value={stats?.overdue ?? 0} icon={AlertCircle} color="red" />
       </div>
 
-      {/* Todo count + role info */}
+      {/* Todo + Role */}
       <div className="grid grid-cols-2 gap-4">
         <Card className="bg-yellow-50 border-2 border-yellow-200">
-          <CardContent className="pt-6 pb-4 flex items-center gap-4">
-            <span className="text-3xl">📌</span>
-            <div>
-              <p className="text-sm font-semibold text-yellow-700 uppercase tracking-wide">Todo</p>
-              <p className="text-4xl font-black text-yellow-800">{stats?.todo ?? 0}</p>
+          <CardContent className="pt-4 pb-3 px-4">
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-xs font-semibold text-yellow-600 uppercase tracking-wide">Todo</p>
+              <ListTodo className="w-4 h-4 text-yellow-400" />
             </div>
+            <p className="text-2xl font-black text-yellow-800">{stats?.todo ?? 0}</p>
           </CardContent>
         </Card>
         <Card className="bg-indigo-50 border-2 border-indigo-200">
-          <CardContent className="pt-6 pb-4 flex items-center gap-4">
-            <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-black text-lg ${user?.role === "ADMIN" ? "bg-indigo-600" : "bg-slate-500"}`}>
+          <CardContent className="pt-4 pb-3 px-4 flex items-center gap-3">
+            <div className={`w-9 h-9 rounded-full flex items-center justify-center text-white font-black text-sm ${user?.role === "ADMIN" ? "bg-indigo-600" : "bg-slate-500"}`}>
               {user?.name?.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)}
             </div>
             <div>
-              <p className="text-sm font-semibold text-indigo-700 uppercase tracking-wide">Your Role</p>
-              <Badge className={`text-sm font-bold mt-1 ${user?.role === "ADMIN" ? "bg-indigo-600 text-white" : "bg-slate-500 text-white"}`}>
+              <div className="flex items-center gap-1 mb-1">
+                <ShieldCheck className="w-3 h-3 text-indigo-500" />
+                <p className="text-xs font-semibold text-indigo-700 uppercase tracking-wide">Your Role</p>
+              </div>
+              <Badge className={`text-sm font-bold ${user?.role === "ADMIN" ? "bg-indigo-600 text-white" : "bg-slate-500 text-white"}`}>
                 {user?.role}
               </Badge>
             </div>
@@ -109,7 +117,7 @@ export default function DashboardPage() {
       <div className="grid md:grid-cols-3 gap-6">
         <Card className="md:col-span-2 border-2">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base font-bold text-slate-800">📊 Tasks by Project</CardTitle>
+            <CardTitle className="text-base font-bold text-slate-800">Tasks by Project</CardTitle>
           </CardHeader>
           <CardContent>
             <TaskBarChart data={stats?.byProject ?? []} />
@@ -117,7 +125,10 @@ export default function DashboardPage() {
         </Card>
         <Card className="border-2 border-red-100">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base font-bold text-red-600">🔴 Overdue Tasks</CardTitle>
+            <div className="flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 text-red-500" />
+              <CardTitle className="text-base font-bold text-red-600">Overdue Tasks</CardTitle>
+            </div>
           </CardHeader>
           <CardContent>
             <OverdueList tasks={overdueTasks} />
