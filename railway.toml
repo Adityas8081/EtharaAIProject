@@ -1,18 +1,3 @@
-[build]
-builder = "nixpacks"
-
-[[services]]
-name = "backend"
-source = "apps/backend"
-startCommand = "npx prisma migrate deploy && node dist/index.js"
-
-[services.envs]
-PORT = "4000"
-
-[[services]]
-name = "frontend"
-source = "apps/frontend"
-startCommand = "node .next/standalone/server.js"
-
-[services.envs]
-PORT = "3000"
+# Railway deployment is configured per-service:
+# - apps/backend/railway.toml  → Backend service (root dir: apps/backend)
+# - apps/frontend/railway.toml → Frontend service (root dir: apps/frontend)
