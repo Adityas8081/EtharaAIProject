@@ -69,9 +69,8 @@ export default function SignupPage() {
                         : "border-slate-200 hover:border-slate-300 bg-white"
                     }`}
                   >
-                    <div className="text-2xl mb-1">👑</div>
-                    <div className="font-bold text-sm text-slate-900">Admin</div>
-                    <div className="text-xs text-slate-500 mt-1">Create projects, assign tasks, manage team</div>
+                    <div className="font-bold text-sm text-slate-900 mb-1">Admin</div>
+                    <div className="text-xs text-slate-500">Create projects, assign tasks, manage team</div>
                   </button>
                   <button
                     type="button"
@@ -82,9 +81,8 @@ export default function SignupPage() {
                         : "border-slate-200 hover:border-slate-300 bg-white"
                     }`}
                   >
-                    <div className="text-2xl mb-1">👤</div>
-                    <div className="font-bold text-sm text-slate-900">Member</div>
-                    <div className="text-xs text-slate-500 mt-1">View tasks, update status, collaborate</div>
+                    <div className="font-bold text-sm text-slate-900 mb-1">Member</div>
+                    <div className="text-xs text-slate-500">View tasks, update status, collaborate</div>
                   </button>
                 </div>
               </div>

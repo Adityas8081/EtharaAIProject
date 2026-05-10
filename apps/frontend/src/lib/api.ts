@@ -13,7 +13,9 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
       const retry = await fetch(`${API_URL}${path}`, { ...options, credentials: "include", headers: { "Content-Type": "application/json", ...options.headers } });
       if (retry.ok) return retry.json();
     }
-    if (typeof window !== "undefined") window.location.href = "/login";
+    if (typeof window !== "undefined" && !window.location.pathname.startsWith("/login") && !window.location.pathname.startsWith("/signup")) {
+      window.location.href = "/login";
+    }
     throw new Error("Session expired");
   }
 

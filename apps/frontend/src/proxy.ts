@@ -3,8 +3,18 @@ import type { NextRequest } from "next/server";
 
 const publicPaths = ["/login", "/signup"];
 
-export function middleware(request: NextRequest) {
+export default function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // Skip static files and API routes
+  if (
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/api") ||
+    pathname.includes(".")
+  ) {
+    return NextResponse.next();
+  }
+
   const isPublic = publicPaths.some((p) => pathname.startsWith(p));
   const hasToken = request.cookies.has("accessToken");
 
@@ -16,7 +26,3 @@ export function middleware(request: NextRequest) {
   }
   return NextResponse.next();
 }
-
-export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
-};
