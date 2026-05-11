@@ -24,7 +24,7 @@ export default function LoginPage() {
       const res = await api.post<{ data: { name: string; role: string } }>("/api/auth/login", form);
       toast.success(`Welcome, ${res.data.name}!`);
       await refetch();
-      router.push("/dashboard");
+      window.location.href = "/dashboard";
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : "Login failed");
     } finally {

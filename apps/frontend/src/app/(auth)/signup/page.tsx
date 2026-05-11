@@ -23,7 +23,7 @@ export default function SignupPage() {
       await api.post("/api/auth/signup", form);
       toast.success(`Account created! Welcome, ${form.name}.`);
       await refetch();
-      router.push("/dashboard");
+      window.location.href = "/dashboard";
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : "Signup failed");
     } finally {
