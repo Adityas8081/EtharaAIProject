@@ -35,7 +35,7 @@ const roleHandler = async (req: AuthRequest, res: Response): Promise<void> => {
   res.json({ data: user });
 };
 
-router.patch("/:id/role", requireAdmin, roleHandler);
-router.put("/:id/role", requireAdmin, roleHandler);
+router.patch("/:id/role", authenticate, requireAdmin, roleHandler);
+router.put("/:id/role", authenticate, requireAdmin, roleHandler);
 
 export default router;
