@@ -7,10 +7,11 @@ import { signupSchema, loginSchema } from "../schemas/auth.schema";
 
 const router = Router();
 
+const isProd = process.env.NODE_ENV === "production";
 const cookieOpts = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
-  sameSite: "lax" as const,
+  secure: isProd,
+  sameSite: (isProd ? "none" : "lax") as "none" | "lax",
 };
 
 router.post("/signup", validate(signupSchema), async (req: Request, res: Response): Promise<void> => {
