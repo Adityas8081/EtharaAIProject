@@ -45,6 +45,7 @@ router.post("/login", validate(loginSchema), async (req: Request, res: Response)
   }
   const accessToken = signAccessToken({ userId: user.id, role: user.role });
   const refreshToken = signRefreshToken({ userId: user.id, role: user.role });
+  await prisma.refreshToken.deleteMany({ where: { userId: user.id } });
   await prisma.refreshToken.create({
     data: { token: refreshToken, userId: user.id, expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) },
   });
